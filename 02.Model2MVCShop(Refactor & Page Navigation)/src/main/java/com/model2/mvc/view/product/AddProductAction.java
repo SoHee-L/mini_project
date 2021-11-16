@@ -32,7 +32,7 @@ public class AddProductAction extends Action {
 		ProductServiceImpl productservice=new ProductServiceImpl();
 		productservice.addProduct(product);
 		HttpSession session = request.getSession();
-		session.setAttribute("vo", product);
+		session.setAttribute("product", product);
 		
 		return "redirect:/product/addProduct.jsp";
 	}

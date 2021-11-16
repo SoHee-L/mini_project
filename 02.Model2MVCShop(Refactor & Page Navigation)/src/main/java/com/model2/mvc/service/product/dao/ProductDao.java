@@ -82,7 +82,9 @@ public class ProductDao {
 		Connection con = DBUtil.getConnection();
 		
 		// Original Query 구성
-		String sql = "SELECT prod_no ,  prod_name , price  FROM  product ";
+		String sql = " SELECT p.prod_no, p.prod_name, p.prod_detail, p.manufacture_day, p.price, p.image_file, p.reg_date, t.TRAN_STATUS_CODE"+
+				" FROM product p, transaction t"+	
+				" WHERE p.prod_no = t.prod_no(+)";
 		// query 구성 맞는지. userDao는 id하고 name으로 검색하는데 왜 email도 검색에 들어가는지
 		
 		if (search.getSearchCondition() != null) {
@@ -114,10 +116,16 @@ public class ProductDao {
 		
 		while(rs.next()){
 			Product product = new Product();
+			product.setFileName(rs.getString("IMAGE_FILE"));       
+			product.setManuDate(rs.getString("MANUFACTURE_DAY"));       
 			product.setPrice(rs.getInt("PRICE"));                 
+			product.setProdDetail(rs.getString("PROD_DETAIL"));    
 			product.setProdName(rs.getString("PROD_NAME"));    
 			product.setProdNo(rs.getInt("PROD_NO"));              
-
+			product.setRegDate(rs.getDate("REG_DATE"));          
+	
+			product.setProTranCode(rs.getString("TRAN_STATUS_CODE"));
+			
 			list.add(product);
 		}
 		
@@ -148,6 +156,7 @@ public class ProductDao {
 		pStmt.setInt(4, vo.getPrice());         
 		pStmt.setString(5, vo.getFileName());   
 		pStmt.setInt(6, vo.getProdNo());        
+		pStmt.executeUpdate();
 		
 		pStmt.close();
 		con.close();

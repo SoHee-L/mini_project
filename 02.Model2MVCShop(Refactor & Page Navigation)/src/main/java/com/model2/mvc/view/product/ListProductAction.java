@@ -20,7 +20,7 @@ public class ListProductAction extends Action {
 		Search search=new Search();
 		
 		int currentPage=1;
-
+		System.out.println(currentPage+"currentPage°ª::");
 		if(request.getParameter("currentPage") != null){
 			currentPage=Integer.parseInt(request.getParameter("currentPage"));
 		}

@@ -3,9 +3,11 @@
 <%@ page import="java.util.List"  %>
 
 <%@ page import="com.model2.mvc.service.domain.Product" %>
+<%@ page import="com.model2.mvc.service.domain.User" %>
 <%@ page import="com.model2.mvc.common.Search" %>
 <%@page import="com.model2.mvc.common.Page"%>
 <%@page import="com.model2.mvc.common.util.CommonUtil"%>
+
 
 
 <%
@@ -74,11 +76,11 @@
 	<tr>
 		
 		<td align="right">
-			<select name="searchCondition" class="ct_input_g" style="width:80px">
-				<option value="0">상품번호</option>
-				<option value="1">상품명</option>
-				<option value="2">상품가격</option>
-			</select>
+			<select class="form-control" name="searchCondition" >
+                  <option value="0" ${!empty search.searchCondition && searchCondition==0 ? "selected" : "" }>상품번호</option>
+                  <option value="1" ${!empty search.searchCondition && searchCondition==1 ? "selected" : "" }>상품명</option>
+                  <option value="2" ${!empty search.searchCondition && searchCondition==2 ? "selected" : "" }>상품가격</option>
+               </select>
 			<input type="text" name="searchKeyword"  class="ct_input_g" style="width:200px; height:19px" />
 		</td>
 	
@@ -90,7 +92,7 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetProductList();">검색</a>
+						<a href="javascript:fncGetProductList('1');">검색</a>
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
@@ -125,6 +127,10 @@
 		for(int i=0; i<list.size(); i++) {
 			Product vo = (Product)list.get(i);
 	%>
+	
+	<%	
+		User user = (User)session.getAttribute("user");
+%>
 		
 	<tr class="ct_list_pop">
 		<td align="center"><%=no--%></td>
@@ -139,7 +145,36 @@
 		<td></td>
 		<td align="left">
 		
-			재고 없음
+			<% if(user!=null && user.getRole().equals("admin")) { %>
+			<%System.out.println("vo뽑아봐요"+vo); %>
+				<% if(vo.getProTranCode()==null) { %>
+				판매중
+				<% } else {%>
+				<% if(vo.getProTranCode().equals("001")) { %>구매완료
+				<a href="/updateTranCode.do?prodNo=<%=vo.getProdNo()%>&tranCode=002">배송하기</a> <% } %>
+				
+				<% if(vo.getProTranCode().equals("002")){ %>배송중 <% } %>
+				 <!-- 배송하기 링크넣어주기 -->
+				<% if(vo.getProTranCode().equals("003")){ %>배송완료
+			
+				<% } %>
+			<% } %>
+			<% } %>
+			
+			<% if(user!=null && !user.getRole().equals("admin")) { %>
+			<%System.out.println("vo뽑아봐요2"+vo); %>
+				<% if(vo.getProTranCode()==null) { %>
+				판매중
+				<% } else {%>
+				<% if(vo.getProTranCode().equals("001")) { %>구매완료<% } %>
+				
+				<% if(vo.getProTranCode().equals("002")){ %>배송중 <% } %>
+				 <!-- 배송하기 링크넣어주기 -->
+				<% if(vo.getProTranCode().equals("003")){ %>배송완료
+			
+				<% } %>
+			<% } %>
+			<% } %>
 		
 		</td>	
 	</tr>

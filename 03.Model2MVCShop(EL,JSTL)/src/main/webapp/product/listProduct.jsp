@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=euc-kr" %>
+<%@ page pageEncoding="EUC-KR"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -97,11 +98,11 @@
 	<tr>
 		
 		<td align="right">
-			<select name="searchCondition" class="ct_input_g" style="width:80px">
-				<option value="0">상품번호</option>
-				<option value="1">상품명</option>
-				<option value="2">상품가격</option>
-			</select>
+			<select class="form-control" name="searchCondition" >
+                  <option value="0" ${!empty search.searchCondition && searchCondition==0 ? "selected" : "" }>상품번호</option>
+                  <option value="1" ${!empty search.searchCondition && searchCondition==1 ? "selected" : "" }>상품명</option>
+                  <option value="2" ${!empty search.searchCondition && searchCondition==2 ? "selected" : "" }>상품가격</option>
+               </select>
 			<input type="text" name="searchKeyword"  class="ct_input_g" style="width:200px; height:19px" />
 		</td>
 	
@@ -175,7 +176,49 @@
 		<td></td>
 		<td align="left">
 		
-			재고 없음
+			<%-- <% if(user!=null && user.getRole().equals("admin")) { %>
+				<% if(vo.getProTranCode()==null) { %>
+				판매중
+				<% } else {%>
+				<% if(vo.getProTranCode().equals("001")) { %>구매완료
+				<a href="/updateTranCode.do?prodNo=<%=vo.getProdNo()%>&tranCode=002">배송하기</a> <% } %>
+	
+				<% if(vo.getProTranCode().equals("002")){ %>배송중 <% } %>
+				 <!-- 배송하기 링크넣어주기 -->
+				<% if(vo.getProTranCode().equals("003")){ %>배송완료
+			
+				<% } %>
+			<% } %>
+			<% } %> --%>
+			
+			<c:choose>  
+				<c:when test="${user!=null && user.role eq 'admin'}"></c:when>
+				<c:when test="${product.proTranCode eq null}">판매중</c:when>
+				 
+				<c:otherwise > 
+					<c:when test="${product.proTranCode eq '001'}">구매완료</c:when>
+					<a href="/updateTranCode.do?prodNo=""${product.prodNo & tranCode eq '002'}">배송하기</a>
+					
+					<c:when test="${product.proTranCode eq '002'}">배송중</c:when>
+					<c:when test="${product.proTranCode eq '003'}">배송완료</c:when>
+				</c:otherwise> 
+				</c:choose>
+			
+			
+			<%--<% if(user!=null && !user.getRole().equals("admin")) { %>
+	
+				<% if(vo.getProTranCode()==null) { %>
+				판매중
+				<% } else {%>
+				<% if(vo.getProTranCode().equals("001")) { %>구매완료<% } %>
+				
+				<% if(vo.getProTranCode().equals("002")){ %>배송중 <% } %>
+				 <!-- 배송하기 링크넣어주기 -->
+				<% if(vo.getProTranCode().equals("003")){ %>배송완료
+			
+				<% } %>
+			<% } %>
+			<% } %> --%>
 		
 		</td>	
 	</tr>
